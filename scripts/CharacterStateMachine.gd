@@ -47,11 +47,12 @@ func _physics_process(delta):
 
 func idle_state(delta):
 	char_mov_component.ApplyGravity(delta);
+	char_mov_component.MoveCharacter(char_mov_component.direction,delta);
 
 func check_idle_state() -> Enums.BaseState:
 	var new_state: Enums.BaseState = current_state;
 	
-	if char_mov_component.input_dir != Vector2.ZERO:
+	if char_mov_component.direction != Vector3.ZERO:
 		new_state = Enums.BaseState.WALK;
 	
 	return new_state;
@@ -64,7 +65,7 @@ func walk_state(delta):
 func check_walk_state() -> Enums.BaseState:
 	var new_state: Enums.BaseState = current_state;
 	
-	if char_mov_component.main_actor.velocity == Vector3(0, 0, 0):
+	if char_mov_component.direction == Vector3(0, 0, 0):
 		new_state = Enums.BaseState.IDLE;
 	
 	if char_mov_component.move_speed_modifier > 0.0:
@@ -115,6 +116,7 @@ func check_jump_state() -> Enums.BaseState:
 
 func OnInputDirChanged(new_input_dir: Vector2) -> void:
 	char_mov_component.input_dir = new_input_dir;
+	char_mov_component.direction =  Vector3(new_input_dir.x, 0, new_input_dir.y).normalized()
 	
 func OnSprintPressed() -> void:
 	char_mov_component.ApplySprint();
@@ -129,5 +131,5 @@ func OnCouchReleased() -> void:
 	char_mov_component.DisableCouch();
 	
 func OnJumpPressed() -> void:
-	if can_jump:
+	if can_jump and  main_actor.is_on_floor():
 		current_state = Enums.BaseState.JUMP;

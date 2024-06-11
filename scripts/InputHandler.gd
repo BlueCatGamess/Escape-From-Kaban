@@ -27,7 +27,7 @@ func _physics_process(_delta):
 		return;
 		
 	var input_dir = Input.get_vector("MoveLeft", "MoveRigth", "MoveFront", "MoveBack");
-	
+
 	SignalHandler.InputDirChanged.emit(input_dir);
 	
 	
