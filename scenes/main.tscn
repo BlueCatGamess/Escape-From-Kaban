@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://b7j05sjkfgur6"]
+
+[ext_resource type="PackedScene" uid="uid://dd5o2hgucyuf" path="res://scenes/main_character.tscn" id="1_idvux"]
+[ext_resource type="PackedScene" uid="uid://bl8kgfign7hh7" path="res://scenes/deep_map.tscn" id="1_qa0yl"]
+[ext_resource type="Script" path="res://scripts/InputHandler.gd" id="3_k8x5i"]
+
+[node name="Main" type="Node"]
+
+[node name="CharacterHolder" type="Node" parent="."]
+
+[node name="MainCharacter" parent="CharacterHolder" instance=ExtResource("1_idvux")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.50313, 0, 0)
+
+[node name="MapHolder" type="Node" parent="."]
+
+[node name="DeepMap" parent="MapHolder" instance=ExtResource("1_qa0yl")]
+
+[node name="MainCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.258819, 0.965926, 0, -0.965926, 0.258819, -0.203535, 10.2399, 3.96423)
+
+[node name="InputHandler" type="Node" parent="."]
+script = ExtResource("3_k8x5i")

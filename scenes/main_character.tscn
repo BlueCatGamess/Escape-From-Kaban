@@ -1,0 +1,36 @@
+[gd_scene load_steps=7 format=3 uid="uid://dd5o2hgucyuf"]
+
+[ext_resource type="Script" path="res://scripts/CharacterMovement.gd" id="1_x7d48"]
+[ext_resource type="Script" path="res://scripts/CharacterStateMachine.gd" id="2_00n6r"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g48hs"]
+albedo_color = Color(0.315467, 0.37244, 0.713078, 1)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_mwh8a"]
+material = SubResource("StandardMaterial3D_g48hs")
+
+[sub_resource type="BoxMesh" id="BoxMesh_nxwh5"]
+size = Vector3(0.25, 0.25, 1)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_clmde"]
+
+[node name="MainCharacter" type="CharacterBody3D"]
+
+[node name="CharacterMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_mwh8a")
+
+[node name="CharacterFaceDirection" type="MeshInstance3D" parent="CharacterMesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -0.482756)
+mesh = SubResource("BoxMesh_nxwh5")
+
+[node name="CharacterColShape" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_clmde")
+
+[node name="CharacterMovement" type="Node" parent="."]
+script = ExtResource("1_x7d48")
+
+[node name="CharacterStateMachine" type="Node" parent="." node_paths=PackedStringArray("char_mov_component")]
+script = ExtResource("2_00n6r")
+char_mov_component = NodePath("../CharacterMovement")
