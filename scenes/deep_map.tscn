@@ -1,4 +1,6 @@
-[gd_scene load_steps=9 format=3 uid="uid://bl8kgfign7hh7"]
+[gd_scene load_steps=11 format=3 uid="uid://bl8kgfign7hh7"]
+
+[ext_resource type="PackedScene" uid="uid://cn7yr3wcf2jd5" path="res://scenes/moving_platform.tscn" id="1_m83yy"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7hgvf"]
 albedo_color = Color(0.242866, 0.194541, 0.158287, 1)
@@ -25,6 +27,8 @@ albedo_color = Color(0.2, 0.2, 0.2, 1)
 [sub_resource type="BoxMesh" id="BoxMesh_jldq4"]
 material = SubResource("StandardMaterial3D_eoxuo")
 size = Vector3(0.5, 3, 25)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ax4j5"]
 
 [node name="DeepMap" type="Node3D"]
 
@@ -84,3 +88,14 @@ mesh = SubResource("BoxMesh_jldq4")
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 1.5, 7.77351)
 use_collision = true
 mesh = SubResource("BoxMesh_jldq4")
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="."]
+transform = Transform3D(2.6535, 0, 0, 0, 3.40439, -0.167833, 0, 5.89657, 0.0968986, -2.93954, 1.54969, 1.88915)
+use_collision = true
+mesh = SubResource("BoxMesh_ax4j5")
+
+[node name="MovingPlatform" parent="." instance=ExtResource("1_m83yy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 1.5, -1)
+
+[node name="MovingPlatform2" parent="." instance=ExtResource("1_m83yy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 2.5, 3)

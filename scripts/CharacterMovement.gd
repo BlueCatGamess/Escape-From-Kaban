@@ -21,8 +21,8 @@ func MoveCharacter(direction: Vector3, delta: float) -> void:
 			main_actor.velocity.x = lerp(main_actor.velocity.x, direction.x * (Constants.SPEED + (Constants.SPEED * move_speed_modifier)), 7.0 * delta)
 			main_actor.velocity.z = lerp(main_actor.velocity.z, direction.z * (Constants.SPEED + (Constants.SPEED * move_speed_modifier)), 7.0 * delta)
 		else:
-			main_actor.velocity.x = lerp(main_actor.velocity.x, direction.x * (Constants.SPEED + (Constants.SPEED * move_speed_modifier)), 7.0 * delta)
-			main_actor.velocity.z = lerp(main_actor.velocity.z, direction.z * (Constants.SPEED + (Constants.SPEED * move_speed_modifier)), 7.0 * delta)
+			main_actor.velocity.x = lerp(main_actor.velocity.x, direction.x * (Constants.SPEED + (Constants.SPEED * move_speed_modifier)), 11.0 * delta)
+			main_actor.velocity.z = lerp(main_actor.velocity.z, direction.z * (Constants.SPEED + (Constants.SPEED * move_speed_modifier)), 11.0 * delta)
 			
 	main_actor.move_and_slide()
 

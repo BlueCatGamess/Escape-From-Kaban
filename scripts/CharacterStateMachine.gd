@@ -2,7 +2,9 @@ class_name CharacterStateMachine
 extends Component
 
 @export var char_mov_component: CharacterMovement;
-
+@export var anim_tree: AnimationTree;
+var state_machine: AnimationNodeStateMachinePlayback ;
+var state_machine2: AnimationNodeStateMachinePlayback ;
 var current_state: Enums.BaseState = Enums.BaseState.IDLE;
 
 var can_jump: bool = true;
@@ -16,8 +18,15 @@ func _ready():
 	SignalHandler.SprintReleased.connect(OnSprintReleased);
 	SignalHandler.CouchPressed.connect(OnCouchPressed);
 	SignalHandler.CouchReleased.connect(OnCouchReleased);
+	state_machine = anim_tree["parameters/playback"];
+	state_machine2 = anim_tree["parameters/Fall/playback"];
 
 func _physics_process(delta):
+	if main_actor.velocity.y < 0.0:
+		anim_tree.set("parameters/conditions/Falling",true);
+	else:
+		anim_tree.set("parameters/conditions/Falling",false);
+		state_machine2.travel("Landing");
 	match current_state:
 		Enums.BaseState.IDLE:
 			idle_state(delta);
@@ -53,11 +62,14 @@ func check_idle_state() -> Enums.BaseState:
 	var new_state: Enums.BaseState = current_state;
 	
 	if char_mov_component.direction != Vector3.ZERO:
+		#anim_tree.set("parameters/conditions/IdleToWalk",true);
+		state_machine.travel("Walk");
 		new_state = Enums.BaseState.WALK;
 	
 	return new_state;
 
 func walk_state(delta):
+	
 	char_mov_component.ApplyGravity(delta);
 	char_mov_component.MoveCharacter(char_mov_component.GetDirectionFromInput(),delta);
 	char_mov_component.RotateCharacter(delta);
@@ -66,9 +78,12 @@ func check_walk_state() -> Enums.BaseState:
 	var new_state: Enums.BaseState = current_state;
 	
 	if char_mov_component.direction == Vector3(0, 0, 0):
+		#anim_tree.set("parameters/conditions/WalkToIdle",true);
+		state_machine.travel("Idle");
 		new_state = Enums.BaseState.IDLE;
 	
 	if char_mov_component.move_speed_modifier > 0.0:
+		state_machine.travel("Sprint");
 		new_state = Enums.BaseState.SPRINT;
 	
 	if char_mov_component.move_speed_modifier < 0.0:
@@ -85,6 +100,7 @@ func check_sprint_state() -> Enums.BaseState:
 	var new_state: Enums.BaseState = current_state;
 	
 	if char_mov_component.move_speed_modifier == 0.0:
+		state_machine.travel("Idle");
 		new_state = Enums.BaseState.IDLE;
 	
 	return new_state;
@@ -103,14 +119,18 @@ func check_couch_state() -> Enums.BaseState:
 	
 	return new_state;
 
-func jump_state(_delta):
+func jump_state(delta):
 	char_mov_component.Jump();
+	char_mov_component.ApplyGravity(delta);
+	char_mov_component.MoveCharacter(char_mov_component.GetDirectionFromInput(),delta);
 
 func check_jump_state() -> Enums.BaseState:
 	var new_state: Enums.BaseState = current_state;
 	
 	if main_actor.is_on_floor():
+		state_machine.travel("Idle");
 		new_state = Enums.BaseState.IDLE;
+
 	
 	return new_state;
 
@@ -132,4 +152,7 @@ func OnCouchReleased() -> void:
 	
 func OnJumpPressed() -> void:
 	if can_jump and  main_actor.is_on_floor():
+		state_machine.travel("Jump");
 		current_state = Enums.BaseState.JUMP;
+
+
