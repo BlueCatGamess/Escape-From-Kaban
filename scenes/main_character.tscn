@@ -126,7 +126,7 @@ input_3/auto_advance = false
 input_3/reset = true
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_v3jva"]
-graph_offset = Vector2(-156.421, 181.315)
+graph_offset = Vector2(-378.662, 169.787)
 nodes/Animation/node = SubResource("AnimationNodeAnimation_cqle8")
 nodes/Animation/position = Vector2(200, 380)
 "nodes/Animation 2/node" = SubResource("AnimationNodeAnimation_gsksd")
@@ -471,7 +471,7 @@ parameters/IDLE/IdleTransition/current_state = "Idle02"
 parameters/IDLE/IdleTransition/transition_request = ""
 parameters/IDLE/IdleTransition/current_index = 1
 parameters/IDLE/PostureTransition/current_state = "Couch"
-parameters/IDLE/PostureTransition/transition_request = ""
+parameters/IDLE/PostureTransition/transition_request = "Stand"
 parameters/IDLE/PostureTransition/current_index = 1
 parameters/JUMP/Transition/current_state = "JumpUp"
 parameters/JUMP/Transition/transition_request = "JumpUp"

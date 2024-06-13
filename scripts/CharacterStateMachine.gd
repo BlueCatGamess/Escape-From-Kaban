@@ -6,7 +6,11 @@ extends Component
 var state_machine: AnimationNodeStateMachinePlayback ;
 var state_machine2: AnimationNodeStateMachinePlayback ;
 var current_state: Enums.BaseState = Enums.BaseState.IDLE;
-var current_posture_state: Enums.PostureState = Enums.PostureState.STAND;
+@onready var current_posture_state: Enums.PostureState = Enums.PostureState.STAND : 
+	set(value):
+		current_posture_state = value;
+		change_posture_state();
+		
 
 var can_jump: bool = true;
 
@@ -32,17 +36,15 @@ func _physics_process(delta):
 		Enums.BaseState.IDLE:
 			idle_state(delta);
 			current_state = check_idle_state();
-			change_posture_state()
 			
 		Enums.BaseState.MOVE:
 			move_state(delta);
 			current_state = check_move_state();
-			change_posture_state()
 			
 		Enums.BaseState.SPRINT:
 			sprint_state(delta);
 			current_state = check_sprint_state();
-			change_posture_state()
+			
 			
 		Enums.BaseState.JUMP:
 			jump_state(delta);
@@ -146,6 +148,7 @@ func OnSprintReleased() -> void:
 func OnCouchPressed() -> void:
 	char_mov_component.ApplyCouch();
 	current_posture_state = Enums.PostureState.COUCH;
+	
 	
 func OnCouchReleased() -> void:
 	char_mov_component.DisableCouch();

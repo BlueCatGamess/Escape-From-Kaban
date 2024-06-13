@@ -15,14 +15,14 @@ func GetDirectionFromInput() -> Vector3:
 	return direction
 	
 
-func MoveCharacter(direction: Vector3, delta: float) -> void:
+func MoveCharacter(move_direction: Vector3, delta: float) -> void:
 	if main_actor.is_on_floor():
-		if direction != Vector3.ZERO:
-			main_actor.velocity.x = lerp(main_actor.velocity.x, direction.x * (Constants.SPEED + (Constants.SPEED * move_speed_modifier)), 7.0 * delta)
-			main_actor.velocity.z = lerp(main_actor.velocity.z, direction.z * (Constants.SPEED + (Constants.SPEED * move_speed_modifier)), 7.0 * delta)
+		if move_direction != Vector3.ZERO:
+			main_actor.velocity.x = lerp(main_actor.velocity.x, move_direction.x * (Constants.SPEED + (Constants.SPEED * move_speed_modifier)), 7.0 * delta)
+			main_actor.velocity.z = lerp(main_actor.velocity.z, move_direction.z * (Constants.SPEED + (Constants.SPEED * move_speed_modifier)), 7.0 * delta)
 		else:
-			main_actor.velocity.x = lerp(main_actor.velocity.x, direction.x * (Constants.SPEED + (Constants.SPEED * move_speed_modifier)), 11.0 * delta)
-			main_actor.velocity.z = lerp(main_actor.velocity.z, direction.z * (Constants.SPEED + (Constants.SPEED * move_speed_modifier)), 11.0 * delta)
+			main_actor.velocity.x = lerp(main_actor.velocity.x, move_direction.x * (Constants.SPEED + (Constants.SPEED * move_speed_modifier)), 11.0 * delta)
+			main_actor.velocity.z = lerp(main_actor.velocity.z, move_direction.z * (Constants.SPEED + (Constants.SPEED * move_speed_modifier)), 11.0 * delta)
 			
 	main_actor.move_and_slide()
 
