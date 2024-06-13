@@ -60,7 +60,7 @@ func idle_state(delta):
 func check_idle_state() -> Enums.BaseState:
 	var new_state: Enums.BaseState = current_state;
 	
-	if char_mov_component.direction != Vector3.ZERO:
+	if !(main_actor.velocity.x <= 0.2 and main_actor.velocity.x >= -0.2) or !(main_actor.velocity.z <= 0.2 and main_actor.velocity.z >= -0.2) :
 		#anim_tree.set("parameters/conditions/IdleToWalk",true);
 		state_machine.travel("MOVE");
 		new_state = Enums.BaseState.MOVE;
@@ -75,7 +75,7 @@ func move_state(delta):
 func check_move_state() -> Enums.BaseState:
 	var new_state: Enums.BaseState = current_state;
 	
-	if char_mov_component.direction == Vector3(0, 0, 0):
+	if (main_actor.velocity.x <= 0.2 and main_actor.velocity.x >= -0.2) and (main_actor.velocity.z <= 0.2 and main_actor.velocity.z >= -0.2):
 		#anim_tree.set("parameters/conditions/WalkToIdle",true);
 		state_machine.travel("IDLE");
 		new_state = Enums.BaseState.IDLE;
@@ -84,8 +84,6 @@ func check_move_state() -> Enums.BaseState:
 		state_machine.travel("SPRINT");
 		new_state = Enums.BaseState.SPRINT;
 	
-	if char_mov_component.move_speed_modifier < 0.0:
-		new_state = Enums.BaseState.COUCH;
 	
 	return new_state;
 
@@ -124,11 +122,11 @@ func change_posture_state() -> void:
 	match current_posture_state:
 		Enums.PostureState.STAND:
 			anim_tree.set("parameters/IDLE/PostureTransition/transition_request","Stand");
-			anim_tree.set("parameters/WALK/PostureTransition/transition_request","Stand");
+			anim_tree.set("parameters/MOVE/PostureTransition/transition_request","Stand");
 			anim_tree.set("parameters/DROP/PostureTransition/transition_request","Stand");
 		Enums.PostureState.COUCH:
 			anim_tree.set("parameters/IDLE/PostureTransition/transition_request","Couch");
-			anim_tree.set("parameters/WALK/PostureTransition/transition_request","Couch");
+			anim_tree.set("parameters/MOVE/PostureTransition/transition_request","Couch");
 			anim_tree.set("parameters/DROP/PostureTransition/transition_request","Couch");
 		Enums.PostureState.FREEHANG:
 			pass

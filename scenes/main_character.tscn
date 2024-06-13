@@ -238,7 +238,7 @@ input_3/auto_advance = false
 input_3/reset = true
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_j45bc"]
-graph_offset = Vector2(-662.317, 59.7762)
+graph_offset = Vector2(-593.317, 133.776)
 nodes/Animation/node = SubResource("AnimationNodeAnimation_kj8uw")
 nodes/Animation/position = Vector2(-140, 80)
 "nodes/Animation 2/node" = SubResource("AnimationNodeAnimation_ompxr")
@@ -477,7 +477,7 @@ parameters/JUMP/Transition/current_state = "JumpUp"
 parameters/JUMP/Transition/transition_request = "JumpUp"
 parameters/JUMP/Transition/current_index = 3
 parameters/MOVE/PostureTransition/current_state = "Stand"
-parameters/MOVE/PostureTransition/transition_request = "Couch"
+parameters/MOVE/PostureTransition/transition_request = "Stand"
 parameters/MOVE/PostureTransition/current_index = 0
 
 [editable path="Placeholder-Character"]
