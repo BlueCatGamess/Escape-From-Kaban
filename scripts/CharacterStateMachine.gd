@@ -80,7 +80,7 @@ func check_move_state() -> Enums.BaseState:
 		state_machine.travel("IDLE");
 		new_state = Enums.BaseState.IDLE;
 	
-	if char_mov_component.move_speed_modifier > 0.0:
+	if char_mov_component.move_speed_modifier > 0.0 :
 		state_machine.travel("SPRINT");
 		new_state = Enums.BaseState.SPRINT;
 	
@@ -94,8 +94,8 @@ func sprint_state(delta):
 
 func check_sprint_state() -> Enums.BaseState:
 	var new_state: Enums.BaseState = current_state;
-	
-	if char_mov_component.move_speed_modifier == 0.0:
+
+	if char_mov_component.move_speed_modifier == 0.0 or ((main_actor.velocity.x <= 0.2 and main_actor.velocity.x >= -0.2) and (main_actor.velocity.z <= 0.2 and main_actor.velocity.z >= -0.2)) :
 		state_machine.travel("IDLE");
 		new_state = Enums.BaseState.IDLE;
 	
