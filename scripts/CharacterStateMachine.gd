@@ -4,7 +4,7 @@ extends Component
 @export var char_mov_component: CharacterMovement;
 @export var anim_tree: AnimationTree;
 var state_machine: AnimationNodeStateMachinePlayback ;
-var state_machine2: AnimationNodeStateMachinePlayback ;
+
 var current_state: Enums.BaseState = Enums.BaseState.IDLE;
 @onready var current_posture_state: Enums.PostureState = Enums.PostureState.STAND : 
 	set(value):
@@ -24,14 +24,8 @@ func _ready():
 	SignalHandler.CouchPressed.connect(OnCouchPressed);
 	SignalHandler.CouchReleased.connect(OnCouchReleased);
 	state_machine = anim_tree["parameters/playback"];
-	state_machine2 = anim_tree["parameters/FALL/playback"];
 
 func _physics_process(delta):
-	if main_actor.velocity.y < 0.0:
-		anim_tree.set("parameters/conditions/Falling",true);
-	else:
-		anim_tree.set("parameters/conditions/Falling",false);
-		state_machine2.travel("Landing");
 	match current_state:
 		Enums.BaseState.IDLE:
 			idle_state(delta);
@@ -45,10 +39,22 @@ func _physics_process(delta):
 			sprint_state(delta);
 			current_state = check_sprint_state();
 			
-			
 		Enums.BaseState.JUMP:
 			jump_state(delta);
-			current_state = check_jump_state();
+			current_state =  check_jump_state();
+			
+		Enums.BaseState.FALL:
+			fall_state(delta)
+			current_state = check_fall_state();
+			
+		Enums.BaseState.CROUCH_IDLE:
+			crouch_idle_state(delta);
+			current_state = check_crouch_idle_state();
+			
+		Enums.BaseState.CROUCH_MOVE:
+			crouch_move_state(delta);
+			current_state = check_crouch_move_state();
+			
 		Enums.BaseState.STUN:
 			pass
 		Enums.BaseState.DIE:
@@ -62,11 +68,26 @@ func idle_state(delta):
 func check_idle_state() -> Enums.BaseState:
 	var new_state: Enums.BaseState = current_state;
 	
-	if !(main_actor.velocity.x <= 0.2 and main_actor.velocity.x >= -0.2) or !(main_actor.velocity.z <= 0.2 and main_actor.velocity.z >= -0.2) :
-		#anim_tree.set("parameters/conditions/IdleToWalk",true);
+	if not is_idling():
 		state_machine.travel("MOVE");
 		new_state = Enums.BaseState.MOVE;
-	
+		
+	if is_falling():
+		new_state = Enums.BaseState.FALL;
+		anim_tree.set("parameters/conditions/Falling",true);
+		
+	if is_sprinting() and not is_idling():
+		state_machine.travel("SPRINT");
+		new_state = Enums.BaseState.SPRINT;
+		
+	if is_crouching() and is_idling():
+		state_machine.travel("CROUCH_IDLE");
+		new_state = Enums.BaseState.CROUCH_IDLE;
+		
+	if is_crouching() and is_moving():
+		state_machine.travel("CROUCH_MOVE");
+		new_state = Enums.BaseState.CROUCH_MOVE;
+		
 	return new_state;
 
 func move_state(delta):
@@ -77,14 +98,22 @@ func move_state(delta):
 func check_move_state() -> Enums.BaseState:
 	var new_state: Enums.BaseState = current_state;
 	
-	if (main_actor.velocity.x <= 0.2 and main_actor.velocity.x >= -0.2) and (main_actor.velocity.z <= 0.2 and main_actor.velocity.z >= -0.2):
-		#anim_tree.set("parameters/conditions/WalkToIdle",true);
+	if is_idling():
 		state_machine.travel("IDLE");
 		new_state = Enums.BaseState.IDLE;
+		
+	if is_falling():
+		anim_tree.set("parameters/conditions/Falling",true);
+		new_state = Enums.BaseState.FALL;
+		
 	
-	if char_mov_component.move_speed_modifier > 0.0 :
+	if is_sprinting():
 		state_machine.travel("SPRINT");
 		new_state = Enums.BaseState.SPRINT;
+	
+	if is_crouching():
+		state_machine.travel("CROUCH_MOVE");
+		new_state = Enums.BaseState.CROUCH_MOVE;
 	
 	
 	return new_state;
@@ -97,9 +126,17 @@ func sprint_state(delta):
 func check_sprint_state() -> Enums.BaseState:
 	var new_state: Enums.BaseState = current_state;
 
-	if char_mov_component.move_speed_modifier == 0.0 or ((main_actor.velocity.x <= 0.2 and main_actor.velocity.x >= -0.2) and (main_actor.velocity.z <= 0.2 and main_actor.velocity.z >= -0.2)) :
-		state_machine.travel("IDLE");
+	if not is_sprinting() or is_idling() :
+		state_machine.travel("SPRINT-TO-IDLE");
 		new_state = Enums.BaseState.IDLE;
+		
+	if not is_sprinting():
+		state_machine.travel("MOVE");
+		new_state = Enums.BaseState.MOVE;
+		
+	if is_falling():
+		anim_tree.set("parameters/conditions/Falling",true);
+		new_state = Enums.BaseState.FALL;
 	
 	return new_state;
 
@@ -112,13 +149,88 @@ func jump_state(delta):
 func check_jump_state() -> Enums.BaseState:
 	var new_state: Enums.BaseState = current_state;
 	
-	if main_actor.is_on_floor():
-		state_machine.travel("IDLE");
-		new_state = Enums.BaseState.IDLE;
+	if is_falling():
+		anim_tree.set("parameters/conditions/Falling",true);
+		new_state = Enums.BaseState.FALL;
 
 	
 	return new_state;
 	
+
+func fall_state(delta):
+	char_mov_component.ApplyGravity(delta);
+	char_mov_component.MoveCharacter(char_mov_component.GetDirectionFromInput(),delta);
+
+func check_fall_state() -> Enums.BaseState:
+	var new_state: Enums.BaseState = current_state;
+	
+	if not is_falling():
+		new_state = Enums.BaseState.IDLE;
+		state_machine.travel("IDLE");
+		anim_tree.set("parameters/conditions/Falling",false);
+	return new_state;
+
+func crouch_idle_state(delta):
+	char_mov_component.ApplyGravity(delta);
+	char_mov_component.MoveCharacter(char_mov_component.GetDirectionFromInput(),delta);
+
+func check_crouch_idle_state() -> Enums.BaseState:
+	var new_state: Enums.BaseState = current_state;
+	
+	if is_crouching() and not is_idling():
+		state_machine.travel("CROUCH_MOVE");
+		new_state = Enums.BaseState.CROUCH_MOVE;
+		
+	if !is_crouching() and is_idling():
+		state_machine.travel("IDLE");
+		new_state = Enums.BaseState.IDLE;
+		
+	if is_falling():
+		new_state = Enums.BaseState.FALL;
+		anim_tree.set("parameters/conditions/Falling",true);
+		
+	#if char_mov_component.move_speed_modifier > 0.0 and !(main_actor.velocity.x <= 0.2 and main_actor.velocity.x >= -0.2) or !(main_actor.velocity.z <= 0.2 and main_actor.velocity.z >= -0.2):
+		#state_machine.travel("SPRINT");
+		#new_state = Enums.BaseState.SPRINT;
+		
+	return new_state;
+	
+func crouch_move_state(delta):
+	char_mov_component.ApplyGravity(delta);
+	char_mov_component.MoveCharacter(char_mov_component.GetDirectionFromInput(),delta);
+	char_mov_component.RotateCharacter(delta);
+
+func check_crouch_move_state() -> Enums.BaseState:
+	var new_state: Enums.BaseState = current_state;
+	
+	if is_crouching() and is_idling():
+		state_machine.travel("CROUCH_IDLE");
+		new_state = Enums.BaseState.CROUCH_IDLE;
+	
+	if !is_crouching() and !is_idling():
+		state_machine.travel("MOVE");
+		new_state = Enums.BaseState.MOVE;
+	
+	if is_falling():
+		new_state = Enums.BaseState.FALL;
+		anim_tree.set("parameters/conditions/Falling",true);
+		
+	return new_state;
+
+func is_crouching() -> bool:
+	return char_mov_component.move_speed_modifier < 0.0;
+
+func is_sprinting() -> bool:
+	return char_mov_component.move_speed_modifier > 0.0;
+	
+func is_idling() -> bool:
+	return (main_actor.velocity.x <= 0.2 and main_actor.velocity.x >= -0.2) and (main_actor.velocity.z <= 0.2 and main_actor.velocity.z >= -0.2);
+
+func is_falling() -> bool:
+	return main_actor.velocity.y < 0.0;
+	
+func is_moving() -> bool:
+	return (main_actor.velocity.x <= 0.2 and main_actor.velocity.x >= -0.2) or (main_actor.velocity.z <= 0.2 and main_actor.velocity.z >= -0.2)
 
 func change_posture_state() -> void:
 	match current_posture_state:
@@ -155,7 +267,7 @@ func OnCouchReleased() -> void:
 	current_posture_state = Enums.PostureState.STAND;
 	
 func OnJumpPressed() -> void:
-	if can_jump and  main_actor.is_on_floor():
+	if can_jump and main_actor.is_on_floor():
 		state_machine.travel("JUMP");
 		current_state = Enums.BaseState.JUMP;
 
