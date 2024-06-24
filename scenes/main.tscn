@@ -9,7 +9,6 @@
 [node name="CharacterHolder" type="Node" parent="."]
 
 [node name="MainCharacter" parent="CharacterHolder" instance=ExtResource("1_idvux")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.37882, 4.35423, -2.19728)
 
 [node name="MapHolder" type="Node" parent="."]
 

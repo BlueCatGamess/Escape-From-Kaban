@@ -45,22 +45,22 @@ shape = SubResource("BoxShape3D_xqpb5")
 
 [node name="Obstacles" type="Node" parent="."]
 
-[node name="Wall01" type="CSGMesh3D" parent="Obstacles"]
+[node name="ObsWall01" type="CSGMesh3D" parent="Obstacles"]
 transform = Transform3D(0.25, 0, 0, 0, 1, 0, 0, 0, 5, -5.11523, 0.5, 2.39743)
 use_collision = true
 mesh = SubResource("BoxMesh_ewa7c")
 
-[node name="Wall02" type="CSGMesh3D" parent="Obstacles"]
-transform = Transform3D(0.216506, 0, 2.5, 0, 1, 0, -0.125, 0, 4.33013, 3.51714, 0.5, -1.86216)
+[node name="ObsWall02" type="CSGMesh3D" parent="Obstacles"]
+transform = Transform3D(0.216506, 0, 2.5, 0, 1, 0, -0.125, 0, 4.33013, 7.54354, 0.5, -1.32017)
 use_collision = true
 mesh = SubResource("BoxMesh_ewa7c")
 
-[node name="Wall03" type="CSGMesh3D" parent="Obstacles"]
-transform = Transform3D(0.216506, 0, 2.5, 0, 1, 0, -0.125, 0, 4.33013, 0.23028, 0.5, 0.293507)
+[node name="ObsWall03" type="CSGMesh3D" parent="Obstacles"]
+transform = Transform3D(0.216506, 0, 2.5, 0, 1, 0, -0.125, 0, 4.33013, 4.25668, 0.5, 0.835497)
 use_collision = true
 mesh = SubResource("BoxMesh_ewa7c")
 
-[node name="Wall04" type="CSGMesh3D" parent="Obstacles"]
+[node name="ObsWall04" type="CSGMesh3D" parent="Obstacles"]
 transform = Transform3D(-1.49012e-08, 0, 5, 0, 1, 0, -0.25, 0, -2.38419e-07, -2.5916, 0.5, -4.36173)
 use_collision = true
 mesh = SubResource("BoxMesh_ewa7c")
