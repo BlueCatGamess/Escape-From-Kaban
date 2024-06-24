@@ -6,11 +6,6 @@ extends Component
 var state_machine: AnimationNodeStateMachinePlayback ;
 
 var current_state: Enums.BaseState = Enums.BaseState.IDLE;
-@onready var current_posture_state: Enums.PostureState = Enums.PostureState.STAND : 
-	set(value):
-		current_posture_state = value;
-		change_posture_state();
-		
 
 var can_jump: bool = true;
 
@@ -232,20 +227,6 @@ func is_falling() -> bool:
 func is_moving() -> bool:
 	return (main_actor.velocity.x <= 0.2 and main_actor.velocity.x >= -0.2) or (main_actor.velocity.z <= 0.2 and main_actor.velocity.z >= -0.2)
 
-func change_posture_state() -> void:
-	match current_posture_state:
-		Enums.PostureState.STAND:
-			anim_tree.set("parameters/IDLE/PostureTransition/transition_request","Stand");
-			anim_tree.set("parameters/MOVE/PostureTransition/transition_request","Stand");
-			anim_tree.set("parameters/DROP/PostureTransition/transition_request","Stand");
-		Enums.PostureState.COUCH:
-			anim_tree.set("parameters/IDLE/PostureTransition/transition_request","Couch");
-			anim_tree.set("parameters/MOVE/PostureTransition/transition_request","Couch");
-			anim_tree.set("parameters/DROP/PostureTransition/transition_request","Couch");
-		Enums.PostureState.FREEHANG:
-			pass
-		Enums.PostureState.BRACE:
-			pass
 
 func OnInputDirChanged(new_input_dir: Vector2) -> void:
 	char_mov_component.input_dir = new_input_dir;
@@ -259,12 +240,10 @@ func OnSprintReleased() -> void:
 
 func OnCouchPressed() -> void:
 	char_mov_component.ApplyCouch();
-	current_posture_state = Enums.PostureState.COUCH;
-	
-	
+
 func OnCouchReleased() -> void:
 	char_mov_component.DisableCouch();
-	current_posture_state = Enums.PostureState.STAND;
+
 	
 func OnJumpPressed() -> void:
 	if can_jump and main_actor.is_on_floor():

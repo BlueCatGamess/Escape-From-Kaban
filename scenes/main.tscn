@@ -16,7 +16,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.37882, 4.35423, -2.19728)
 [node name="DeepMap" parent="MapHolder" instance=ExtResource("1_qa0yl")]
 
 [node name="MainCamera" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.258819, 0.965926, 0, -0.965926, 0.258819, 0, 9.76092, 3.7384)
+transform = Transform3D(1, 0, 0, 0, 0.292372, 0.956305, 0, -0.956305, 0.292372, 0, 10, 4.5)
 fov = 85.0
 size = 14.9852
 
